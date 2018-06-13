@@ -486,3 +486,10 @@
   (assert (eq 'character (stream-element-type stream)))
   (make-instance 'css-lexer :stream stream))
                  
+(defmethod print-object ((object ident-token) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (format stream "~S" (token-string object))))
+
+(defmethod print-object ((object hash-token) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (format stream "~S" (token-string object))))
