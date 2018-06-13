@@ -39,6 +39,7 @@
 (defgeneric consume-token (lexer))
 
 (defclass css-token (token) ())
+(defclass printable (token) ())
 
 (defclass identified-token (css-token)
   ((ident :initarg :ident
@@ -47,10 +48,10 @@
 
 (defclass comment-token (css-token) ())
 (defclass whitespace-token (css-token) ())
-(defclass ident-token (css-token) ())
+(defclass ident-token (printable css-token) ())
 (defclass function-token (identified-token) ())
 (defclass at-keyword-token (identified-token) ())
-(defclass hash-token (css-token) ())
+(defclass hash-token (printable css-token) ())
 (defclass string-token (css-token) ())
 
 (defclass url-token (identified-token)
@@ -58,7 +59,7 @@
 	:reader token-url
 	:type token)))
 
-(defclass number-token (css-token) ())
+(defclass number-token (printable css-token) ())
 
 (defclass numbered-token (css-token)
   ((number :initarg :number
@@ -86,7 +87,7 @@
 (defclass {-token (css-token) ())
 (defclass }-token (css-token) ())
 (defclass eof-token (css-token) ())
-(defclass delim-token (css-token) ())
+(defclass delim-token (printable css-token) ())
 
 (defmethod comment-token ((lx lexer))
   (push-token lx)
@@ -490,11 +491,29 @@
 (defun css-lexer (stream)
   (assert (eq 'character (stream-element-type stream)))
   (make-instance 'css-lexer :stream stream))
-                 
-(defmethod print-object ((object ident-token) stream)
-  (print-unreadable-object (object stream :type t :identity t)
+
+;;  print-object
+
+(defmethod print-object ((object identified-token) stream)
+  (declare (type cl:stream stream))
+  (print-unreadable-object (object stream :type t)
+    (format stream "~S" (token-ident object))))
+
+(defmethod print-object ((object numbered-token) stream)
+  (declare (type cl:stream stream))
+  (print-unreadable-object (object stream :type t)
+    (format stream "~S" (token-number object))))
+
+(defmethod print-object ((object printable) stream)
+  (declare (type cl:stream stream))
+  (print-unreadable-object (object stream :type t)
     (format stream "~S" (token-string object))))
 
-(defmethod print-object ((object hash-token) stream)
-  (print-unreadable-object (object stream :type t :identity t)
-    (format stream "~S" (token-string object))))
+(defmethod print-object ((object string-token) stream)
+  (declare (type cl:stream stream))
+  (print-unreadable-object (object stream :type t)
+    (format stream "~S" (string-token-string object))))
+
+(defmethod print-object ((object token) stream)
+  (declare (type cl:stream stream))
+  (print-unreadable-object (object stream :type t)))
