@@ -207,9 +207,9 @@
 
 (defmethod match-string ((lx lexer) (end-char character))
   (match-sequence lx
-    (match lx end-char)
-    (match-times lx (lambda (lx) (match-string-char lx end-char)) 0 nil)
-    (match lx end-char)))
+    (and (match lx end-char)
+         (match-times lx (lambda (lx) (match-string-char lx end-char)) 0 nil)
+         (match lx end-char))))
 
 (defmethod string-token ((lx lexer))
   (push-token lx)
