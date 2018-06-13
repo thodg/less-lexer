@@ -1,9 +1,7 @@
 
 (in-package :css-lexer)
 
-(defclass css-lexer (lexer)
-  ((eof-p :initform nil
-          :accessor eof-p)))
+(defclass css-lexer (lexer) ())
 
 (defgeneric match-comment (lexer))
 (defgeneric match-newline (lexer))
@@ -444,7 +442,7 @@
   (cond ((and (lexer-in-eof lx)
               (= (lexer-match-start lx)
                  (fill-pointer (lexer-buffer lx))))
-         (setf (eof-p lx) t)
+         (setf (lexer-eof-p lx) t)
          (make-token lx 'eof-token))
         (t
          (discard-token lx))))
