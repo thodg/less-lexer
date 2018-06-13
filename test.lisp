@@ -1,26 +1,32 @@
 
 (in-package :common-lisp-user)
 
-(require :babel-stream)
-(require :unistd-stream)
-(require :token-stream)
-
-(defpackage :css-lexer-tests
+(defpackage :css-lexer/test
   (:use :babel-stream
         :cl
         :cl-stream
         :css-lexer
         :unistd-stream)
   #.(cl-stream:shadowing-import-from)
-  (:export #:run))
+  (:export
+   #:run
+   #:simple-test))
 
-(in-package :css-lexer-tests)
+(in-package :css-lexer/test)
 
-(with-stream (css (css-lexer
-                   (string-input-stream
-                    "body { color: #f00; }")))
-  (loop
-     (let ((r (stream-read css)))
-       (when (typep r 'css-lexer::eof-token)
-         (return))
-       (print r))))
+(defun simple-test ()
+  (with-stream (css (css-lexer
+                     (string-input-stream
+                      "body { color: #f00; }")))
+    (loop
+       (let ((r (stream-read css)))
+         (print r)
+         (when (typep r 'css-lexer::eof-token)
+           (return))))))
+
+(defun run ()
+  (asdf:load-system :css-lexer/test)
+  (simple-test))
+
+(untrace token-stream::subseq*
+         token-stream:make-token)

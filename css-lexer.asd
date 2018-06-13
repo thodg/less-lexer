@@ -28,7 +28,13 @@
   :author "Thomas de Grivel <thoxdg@gmail.com>"
   :version "0.1"
   :description "CSS lexer as a cl-stream/token-stream"
-  :depends-on ("cl-stream")
+  :depends-on ("token-stream")
   :components
   ((:file "package")
    (:file "css-lexer" :depends-on ("package"))))
+
+(defsystem :css-lexer/test
+  :name "css-lexer/test"
+  :depends-on ("babel-stream" "css-lexer" "unistd-stream")
+  :components
+  ((:file "test")))

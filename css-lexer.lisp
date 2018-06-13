@@ -1,6 +1,10 @@
 
 (in-package :css-lexer)
 
+(defclass css-lexer (lexer)
+  ((eof-p :initform nil
+          :accessor eof-p)))
+
 (defgeneric match-comment (lexer))
 (defgeneric match-newline (lexer))
 (defgeneric match-whitespace (lexer))
@@ -34,6 +38,7 @@
 (defgeneric column-token (lexer))
 (defgeneric cdo-token (lexer))
 (defgeneric cdc-token (lexer))
+(defgeneric consume-token (lexer))
 
 (defclass css-token (token) ())
 
@@ -251,7 +256,7 @@
 			      (match-url-unquoted lx))))
 		 (match-ws* lx)
 		 (when (match lx #\))
-		   (make-token lx (url-token :ident ident :url url)))))))
+		   (make-token lx 'url-token :ident ident :url url))))))
       (discard-token lx)))
 
 (defmethod match-digit ((lx lexer))
@@ -436,9 +441,13 @@
 
 (defmethod eof-token ((lx lexer))
   (push-token lx)
-  (if (lexer-eof lx)
-      (make-token lx 'eof-token)
-      (discard-token lx)))
+  (cond ((and (lexer-in-eof lx)
+              (= (lexer-match-start lx)
+                 (fill-pointer (lexer-buffer lx))))
+         (setf (eof-p lx) t)
+         (make-token lx 'eof-token))
+        (t
+         (discard-token lx))))
 
 (defmethod delim-token ((lx lexer))
   (push-token lx)
@@ -448,14 +457,12 @@
 
 ;;  CSS lexer
 
-(defclass css-lexer (lexer)
-  ())
-
 (defmethod stream-element-type ((lx css-lexer))
   'css-token)
 
-(defmethod stream-read ((lx css-lexer))
-  (or (whitespace-token lx)
+(defmethod lexer-token ((lx css-lexer))
+  (or (eof-token lx)
+      (whitespace-token lx)
       (string-token lx)
       (hash-token lx)
       (suffix-match-token lx)
@@ -479,8 +486,8 @@
       (ident-token lx)
       (dash-match-token lx)
       (include-match-token lx)
-      (eof-token lx)
-      (delim-token lx)))
+      (delim-token lx)
+      (error "no matching css token")))
 
 (defun css-lexer (stream)
   (assert (eq 'character (stream-element-type stream)))
