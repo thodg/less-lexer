@@ -25,7 +25,6 @@
            (return))))))
 
 (defun run ()
-  (asdf:load-system :css-lexer/test)
   (simple-test))
 
 (untrace token-stream::subseq*
