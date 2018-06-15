@@ -440,7 +440,7 @@
 
 (defmethod eof-token ((lx lexer))
   (push-token lx)
-  (cond ((and (lexer-in-eof lx)
+  (cond ((and (lexer-input-ended lx)
               (= (lexer-match-start lx)
                  (fill-pointer (lexer-buffer lx))))
          (setf (lexer-eof-p lx) t)
