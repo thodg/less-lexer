@@ -439,14 +439,15 @@
       (discard-token lx)))
 
 (defmethod eof-token ((lx lexer))
-  (push-token lx)
-  (cond ((and (lexer-input-ended lx)
-              (= (lexer-match-start lx)
-                 (fill-pointer (lexer-buffer lx))))
-         (setf (lexer-eof-p lx) t)
-         (make-token lx 'eof-token))
-        (t
-         (discard-token lx))))
+  (unless (lexer-input-n lx 1)
+    (push-token lx)
+    (cond ((and (lexer-input-ended lx)
+                (= (lexer-match-start lx)
+                   (fill-pointer (lexer-buffer lx))))
+           (setf (lexer-eof-p lx) t)
+           (make-token lx 'eof-token))
+          (t
+           (discard-token lx)))))
 
 (defmethod delim-token ((lx lexer))
   (push-token lx)
