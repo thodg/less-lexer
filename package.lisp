@@ -86,6 +86,11 @@
    #:substring-match-token
    #:suffix-match-token
    #:suffix-match-token
+   #:token
+   #:token-character
+   #:token-ident
+   #:token-line
+   #:token-string
    #:unicode-range-token
    #:unicode-range-token
    #:url-token
