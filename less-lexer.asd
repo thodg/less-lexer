@@ -1,5 +1,5 @@
 ;;
-;;  css-lexer  -  CSS lexer as a cl-stream/token-stream
+;;  less-lexer  -  LESS lexer as a cl-stream/token-stream
 ;;
 ;;  Copyright 2018 Thomas de Grivel <thoxdg@gmail.com>
 ;;
@@ -18,23 +18,23 @@
 
 (in-package :common-lisp-user)
 
-(defpackage :css-lexer.system
+(defpackage :less-lexer.system
   (:use :common-lisp :asdf))
 
-(in-package :css-lexer.system)
+(in-package :less-lexer.system)
 
-(defsystem :css-lexer
-  :name "css-lexer"
+(defsystem :less-lexer
+  :name "less-lexer"
   :author "Thomas de Grivel <thoxdg@gmail.com>"
   :version "0.1"
-  :description "CSS lexer as a cl-stream/token-stream"
-  :depends-on ("token-stream")
+  :description "LESS lexer as a cl-stream/token-stream"
+  :depends-on ("css-lexer")
   :components
   ((:file "package")
-   (:file "css-lexer" :depends-on ("package"))))
+   (:file "less-lexer" :depends-on ("package"))))
 
-(defsystem :css-lexer/test
-  :name "css-lexer/test"
-  :depends-on ("babel-stream" "css-lexer" "unistd-stream")
+(defsystem :less-lexer/test
+  :name "less-lexer/test"
+  :depends-on ("babel-stream" "less-lexer" "unistd-stream")
   :components
   ((:file "test")))

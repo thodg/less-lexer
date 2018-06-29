@@ -1,5 +1,5 @@
 ;;
-;;  css-lexer  -  CSS lexer
+;;  less-lexer  -  LESS lexer
 ;;
 ;;  Copyright 2017,2018 Thomas de Grivel <thoxdg@gmail.com>
 ;;
@@ -18,85 +18,12 @@
 
 (in-package :common-lisp)
 
-(defpackage :css-lexer
+(defpackage :less-lexer
   (:use :cl-stream
         :common-lisp
+        :css-lexer
         :token-stream)
   #.(cl-stream:shadowing-import-from)
   (:export
-   #:[-token
-   #:]-token
-   #:at-keyword-token
-   #:at-keyword-token
-   #:cdc-token
-   #:cdc-token
-   #:cdo-token
-   #:cdo-token
-   #:colon-token
-   #:column-token
-   #:column-token
-   #:comma-token
-   #:comment-token
-   #:consume-token
-   #:css-lexer
-   #:css-token
-   #:dash-match-token
-   #:dash-match-token
-   #:delim-token
-   #:dimension-token
-   #:dimension-token
-   #:eof-token
-   #:function-token
-   #:function-token
-   #:hash-token
-   #:ident-token
-   #:ident-token
-   #:identified-token
-   #:include-match-token
-   #:include-match-token
-   #:left-paren-token
-   #:match-comment
-   #:match-digit
-   #:match-digit+
-   #:match-escape
-   #:match-hex-digit
-   #:match-ident-char
-   #:match-ident-char*
-   #:match-newline
-   #:match-non-printable
-   #:match-string
-   #:match-string-char
-   #:match-url-unquoted
-   #:match-url-unquoted-char
-   #:match-whitespace
-   #:match-ws*
-   #:number-token
-   #:number-token
-   #:numbered-token
-   #:percentage-token
-   #:percentage-token
-   #:prefix-match-token
-   #:prefix-match-token
-   #:printable
-   #:right-paren-token
-   #:semicolon-token
-   #:string-token
-   #:string-token
-   #:substring-match-token
-   #:substring-match-token
-   #:suffix-match-token
-   #:suffix-match-token
-   #:token
-   #:token-character
-   #:token-ident
-   #:token-line
-   #:token-string
-   #:unicode-range-token
-   #:unicode-range-token
-   #:url-token
-   #:url-token
-   #:whitespace-token
-   #:whitespace-token
-   #:{-token
-   #:}-token
+   #:less-lexer
    ))

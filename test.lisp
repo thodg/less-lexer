@@ -1,27 +1,29 @@
 
 (in-package :common-lisp-user)
 
-(defpackage :css-lexer/test
+(defpackage :less-lexer/test
   (:use :babel-stream
         :cl
         :cl-stream
         :css-lexer
+        :less-lexer
         :unistd-stream)
   #.(cl-stream:shadowing-import-from)
   (:export
    #:run
    #:simple-test
+   #:test
    #:test-file))
 
-(in-package :css-lexer/test)
+(in-package :less-lexer/test)
 
 (defgeneric test (x))
 
 (defmethod test ((s string))
-  (with-stream (css (css-lexer (string-input-stream s)))
+  (with-stream (less (less-lexer (string-input-stream s)))
     (let ((result))
       (loop
-         (multiple-value-bind (token state) (stream-read css)
+         (multiple-value-bind (token state) (stream-read less)
            (ecase state
              ((nil) (push token result))
              ((:eof) (return))
@@ -29,12 +31,13 @@
       (nreverse result))))
 
 (defmethod test ((path pathname))
-  (with-stream (css (css-lexer
-                     (babel-input-stream
-                      (unistd-stream-open path :read t))))
+  (with-stream (less (less-lexer
+                      (babel-input-stream
+                       (unistd-stream-open
+                        (namestring path) :read t))))
     (let ((result))
       (loop
-         (multiple-value-bind (token state) (stream-read css)
+         (multiple-value-bind (token state) (stream-read less)
            (ecase state
              ((nil) (push token result))
              ((:eof) (return))
@@ -47,7 +50,12 @@
     ("body { color: #f00; }"
      ident-token whitespace-token {-token whitespace-token
      ident-token colon-token whitespace-token hash-token semicolon-token
-     whitespace-token }-token eof-token)))
+     whitespace-token }-token eof-token)
+    ("/* comment */"
+     comment-token eof-token)
+    ("// comment
+"
+     comment-token eof-token)))
 
 (defvar *success*)
 
@@ -81,6 +89,3 @@
         (let ((result (test arg)))
           (compare-result result expected))))
     (format t "; Passed tests ~A/~A total~%" *success* count)))
-
-(untrace token-stream::subseq*
-         token-stream:make-token)
