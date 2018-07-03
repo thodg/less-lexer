@@ -22,6 +22,7 @@
   (:use :cl-stream
         :common-lisp
         :css-lexer
+        :matcher-stream
         :token-stream)
   #.(cl-stream:shadowing-import-from)
   (:export
